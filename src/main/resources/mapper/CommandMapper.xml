@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lv.mapper.CommandMapper">
+    <resultMap id="Command" type="com.lv.model.Command">
+        <id column="cid" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+        <result column="name" jdbcType="VARCHAR" property="name" javaType="java.lang.String"/>
+        <result column="description" jdbcType="VARCHAR" javaType="java.lang.String"/>
+    </resultMap>
+
+    <select id="findAllCommand" resultMap="Command">
+        SELECT
+            co.id cid,
+            co.name,
+            co.description
+        FROM command co
+            INNER JOIN command_content cc
+                ON co.id = cc.command_id
+    </select>
+
+    <resultMap id="CommandWithContent" type="com.lv.model.Command" extends="Command">
+        <collection property="contentList" ofType="com.lv.model.CommandContent" column="command_id">
+            <id column="id" jdbcType="INTEGER" property="id"/>
+            <result column="content" jdbcType="VARCHAR" property="content"/>
+            <result column="command_id" jdbcType="INTEGER" property="commandId"/>
+        </collection>
+    </resultMap>
+
+    <select id="findAllCommandWithContent" resultMap="CommandWithContent">
+        SELECT
+            co.id cid,
+            co.name,
+            co.description,
+            cc.content,
+            cc.id
+        FROM command co
+            INNER JOIN command_content cc
+                ON co.id = cc.command_id
+    </select>
+
+</mapper>
